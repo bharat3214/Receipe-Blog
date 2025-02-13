@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        hr {
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e9ecef;
+        }
+        .action-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .action-btn:hover {
+            background-color: #0056b3;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+       
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 20px;
+            margin-bottom: 60px;
+        }
+        .navbar .brand {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .navbar .login-container {
+            display: flex;
+            gap: 10px;
+        }
+        .navbar input {
+            padding: 5px;
+            border: none;
+            border-radius: 3px;
+        }
+        .navbar button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .navbar button:hover {
+            background-color: #0056b3;
+        }
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+
+
+
+
+    
+    <nav class="navbar">
+        <label class="brand" style="color: white;">🙋🏻‍♂️ {{user.username}}</label>
+        <div class="login-container">
+        
+            {% if request.user.is_authenticated %}
+           
+        <a href="/logout/" class="btn-btn-success" type="submit">Logout</a>
+           
+        
+        {% else %}
+           <a href="/login/" class="btn btn-btn-success" type="submit">Login</a>
+        {% endif %}
+        </div>
+    </nav>
+    <div class="container">  
+        <form class="card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h2>Add Recipe</h2>
+            <hr>
+            <div class="mb-3">
+                <label class="form-label">Recipe Name</label>
+                <input name="rec_name" type="text" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Recipe Description</label>
+                <textarea name="rec_desc" class="form-control" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Recipe Image</label>
+                <input name="rec_img" type="file" class="form-control" required>
+            </div>
+            <button type="submit" class="btn">Add Recipe</button>
+        </form>
+    </div>
+
+
+
+<br> 
+
+<div>
+    <form>
+        <div style="display: flex;">
+        
+            <label style=" margin-left: 250px; font-size: 20px;" class="form-label">Search Food</label>
+        
+            <input style="margin-right: 300px ;margin-left:25px;" name="search" type="text" class="form-control" >
+    
+            <div>   
+            <button style="margin-right: 100px;" type="submit" class="btn btn-primary">Search</button>
+        </div>
+        </div>
+    </form>
+</div>
+
+    <div class="container">
+        <h2>Recipe List</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Sr No</th>
+                    <th scope="col">Recipe Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receipe in receipes %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ receipe.rec_name }}</td>
+                    <td>{{ receipe.rec_desc }}</td>
+                    <td>
+                        <img src="/media/{{ receipe.rec_img }}" style="height: 100px; object-fit: cover;">
+                    </td>
+                    <td>
+                        <div style="margin-bottom: 40px;">
+                            <a href="/deletereceipe/{{ receipe.id }}/" class="action-btn delete-btn">Delete</a>
+                        </div>
+                        <div>
+                            <a href="/updatereceipe/{{ receipe.id }}/" class="action-btn success-btn">Update</a>
+                        </div>
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
